@@ -22,7 +22,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 5b0c5c8343317344c8dd1ea4f09e38cf, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.166
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 5b0c5c8343317344c8dd1ea4f09e38cf, type: 3}
       propertyPath: m_LocalPosition.y
@@ -62,7 +62,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 5b0c5c8343317344c8dd1ea4f09e38cf, type: 3}
       propertyPath: m_Name
-      value: pPipe1 (6)
+      value: Vase
       objectReference: {fileID: 0}
     - target: {fileID: 7046644522681670263, guid: 5b0c5c8343317344c8dd1ea4f09e38cf, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -82,15 +82,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8302545569866565869, guid: 5b0c5c8343317344c8dd1ea4f09e38cf, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -3.3741
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 8302545569866565869, guid: 5b0c5c8343317344c8dd1ea4f09e38cf, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.05
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8302545569866565869, guid: 5b0c5c8343317344c8dd1ea4f09e38cf, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.14387
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -98,5 +98,27 @@ PrefabInstance:
     - {fileID: -3074674834294081976, guid: 5b0c5c8343317344c8dd1ea4f09e38cf, type: 3}
     - {fileID: -6534297780034698126, guid: 5b0c5c8343317344c8dd1ea4f09e38cf, type: 3}
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5b0c5c8343317344c8dd1ea4f09e38cf, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1038559762915328994}
   m_SourcePrefab: {fileID: 100100000, guid: 5b0c5c8343317344c8dd1ea4f09e38cf, type: 3}
+--- !u!1 &120643630305191170 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 5b0c5c8343317344c8dd1ea4f09e38cf, type: 3}
+  m_PrefabInstance: {fileID: 967699356285933651}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1038559762915328994
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 120643630305191170}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 83ddb2f6a0c85364eb32a65a5be75e3a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Bottle
+  _position: 0
+  _color: {r: 0, g: 0, b: 0, a: 0}
