@@ -20,6 +20,7 @@ public class Bottle : BottleBase // INHERITANCE
     }
     public void SetColor(Color color)
     {
+        _color = color;
         MeshRenderer mesh = GetComponentInChildren<MeshRenderer>();
         mesh.material.color = color;
     }
