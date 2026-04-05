@@ -3,6 +3,10 @@ using UnityEngine;
 public class Bottle : BottleBase // INHERITANCE
 {
     private bool _isSelected;
+    private void Start()
+    {
+        _isSelected = false;
+    }
 
     public override void OnSelect() // POLYMORPHISM
     {
@@ -13,5 +17,10 @@ public class Bottle : BottleBase // INHERITANCE
     public void SetPosition(int newPosition)
     {
         _position = newPosition;
+    }
+    public void SetColor(Color color)
+    {
+        MeshRenderer mesh = GetComponentInChildren<MeshRenderer>();
+        mesh.material.color = color;
     }
 }

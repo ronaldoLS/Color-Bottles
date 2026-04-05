@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private float _boundary;
     private List<Bottle> _bottlesTopShelf;
     private List<Bottle> _secretSequence = new List<Bottle>();
+    [SerializeField] private List<Color> _availableColors;
 
     [SerializeField] private List<float> _positions = new List<float>();
 
@@ -32,7 +33,7 @@ public class GameManager : MonoBehaviour
         {
             // Subtrai o offset para centralizar
             float pos = (i * gap) - centerOffset;
-            _positions.Add(pos);
+            _positions.Add((float)Math.Round(pos, 2));
         }
         Debug.Log("Positions generated");
     }
@@ -70,6 +71,7 @@ public class GameManager : MonoBehaviour
         {
             GameObject bottleObj = Instantiate(_bottle, new Vector3(_positions[i], 0.86f, -0.5f), Quaternion.identity);
             Bottle bottle = bottleObj.GetComponent<Bottle>();
+            bottle.SetColor(_availableColors[i]);
             bottle.SetPosition(i);
             _bottlesTopShelf.Add(bottle);
         }

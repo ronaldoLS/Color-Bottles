@@ -1013,6 +1013,13 @@ MonoBehaviour:
   _bottle: {fileID: 120643630305191170, guid: d993a168dc9866a40922ad534cc10bca, type: 3}
   _bottleNumber: 6
   _boundary: 2
+  _availableColors:
+  - {r: 1, g: 0, b: 0, a: 0}
+  - {r: 1, g: 0.53333336, b: 0, a: 0}
+  - {r: 1, g: 1, b: 0, a: 0}
+  - {r: 0, g: 1, b: 0, a: 0}
+  - {r: 0, g: 0, b: 1, a: 0}
+  - {r: 0.72156864, g: 0, b: 1, a: 0}
   _positions: []
 --- !u!4 &697265600
 Transform:
