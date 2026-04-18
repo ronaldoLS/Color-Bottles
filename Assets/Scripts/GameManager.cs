@@ -8,9 +8,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _bottlePrefab;
     [SerializeField] private float _boundary;
 
+    private Vector3 _indicatorOfset = new(-0.125f, 0.39f, -0.235f);
     private int _bottleNumber;
     private List<GameObject> _bottlesTopShelf = new List<GameObject>();
-    private GameObject[] _secretSequence; 
+    private GameObject[] _secretSequence;
 
 
     [SerializeField] private List<Color> _availableColors;
@@ -101,4 +102,11 @@ public class GameManager : MonoBehaviour
         }
         Debug.Log($"Correct Positions: {CorrectPositions}");
     }
+    public void setIndicatorPosition(Vector3 Pos)
+    {
+        // Lógica para posicionar o indicador com base na posição da garrafa selecionada
+        _IndicatorPrefab.SetActive(true);
+        _IndicatorPrefab.gameObject.transform.position = Pos + _indicatorOfset;
+    }
+
 }
