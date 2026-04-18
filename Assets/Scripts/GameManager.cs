@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private GameObject _bottle;
-    [SerializeField] private int _bottleNumber;
+    [SerializeField] private GameObject _IndicatorPrefab;
+    [SerializeField] private GameObject _bottlePrefab;
     [SerializeField] private float _boundary;
 
+    private int _bottleNumber;
     private List<GameObject> _bottlesTopShelf = new List<GameObject>();
     private GameObject[] _secretSequence; 
 
@@ -19,6 +20,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        _bottleNumber = _availableColors.Count; // Assumindo que o número de garrafas é igual ao número de cores disponíveis
         _secretSequence = new GameObject[_bottleNumber];
         GeneratePositions();
         CreateTopShelf();
@@ -44,7 +46,7 @@ public class GameManager : MonoBehaviour
         _bottlesTopShelf.Clear();
         for (int i = 0; i < _positions.Count; i++)
         {
-            GameObject bottleObj = Instantiate(_bottle, new Vector3(_positions[i], 0.86f, -0.5f), Quaternion.identity);
+            GameObject bottleObj = Instantiate(_bottlePrefab, new Vector3(_positions[i], 0.86f, -0.5f), Quaternion.identity);
             Bottle bottle = bottleObj.GetComponent<Bottle>();
 
             // Segurança: verifica se há cores suficientes
@@ -71,7 +73,7 @@ public class GameManager : MonoBehaviour
             } while (indexesUsed.Contains(randomIndex));
 
 
-            GameObject bottleObj = Instantiate(_bottle, new Vector3(_positions[randomIndex], -0.6f, -0.5f), Quaternion.identity);
+            GameObject bottleObj = Instantiate(_bottlePrefab, new Vector3(_positions[randomIndex], -0.6f, -0.5f), Quaternion.identity);
             Bottle bottle = bottleObj.GetComponent<Bottle>();
 
             bottle.SetColor(_availableColors[i]);
