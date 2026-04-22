@@ -486,6 +486,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UIManager
   _correctVasesText: {fileID: 101900435}
+  _swapsText: {fileID: 303170156}
+  _timeText: {fileID: 1208994018}
 --- !u!1 &303170154
 GameObject:
   m_ObjectHideFlags: 0
@@ -498,7 +500,7 @@ GameObject:
   - component: {fileID: 303170157}
   - component: {fileID: 303170156}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Swaps Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -543,7 +545,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 7 / 10
+  m_text: 5
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1746,7 +1748,7 @@ GameObject:
   - component: {fileID: 1208994019}
   - component: {fileID: 1208994018}
   m_Layer: 5
-  m_Name: Text (TMP) (1)
+  m_Name: Time Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

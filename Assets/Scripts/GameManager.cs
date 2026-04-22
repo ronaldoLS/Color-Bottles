@@ -13,6 +13,7 @@ public class GameManager : MonoBehaviour
     private List<GameObject> _bottlesTopShelf = new List<GameObject>();
     private GameObject[] _secretSequence;
     private UIManager _UIManager;
+    private int _swapCount = 0;
 
 
     [SerializeField] private List<Color> _availableColors;
@@ -30,7 +31,11 @@ public class GameManager : MonoBehaviour
         PlaceSecretSequence();
         CheckSequence();
     }
-
+    private void Update()
+    {
+        TimeSpan timeSpan = TimeSpan.FromSeconds(Time.time);
+        _UIManager.UpdateTimeText(timeSpan.ToString(@"mm\:ss"));
+    }
     public void GeneratePositions()
     {
         _positions.Clear();
@@ -133,7 +138,8 @@ public class GameManager : MonoBehaviour
 
                     bottleComponent.toggleSelected();
                     bottleSelected.GetComponent<Bottle>().toggleSelected();
-                    UpdatePlaces();
+                    UpdatePlaces(); // Atualiza as posições das garrafas após a troca
+                    UpdateSwaps(); // Atualiza o contador de trocas
                     break; // Sai do loop após encontrar mais de uma garrafa selecionada
                 }
                 bottleSelected = _bottlesTopShelf[i];
@@ -142,6 +148,7 @@ public class GameManager : MonoBehaviour
         }
 
         CheckSequence(); // Verifica a sequência após a troca
+        
     }
 
     public void UpdatePlaces()
@@ -151,6 +158,11 @@ public class GameManager : MonoBehaviour
             Vector3 newPosition = new Vector3(_positions[i], 0.86f, -0.5f);
             _bottlesTopShelf[i].transform.position = newPosition;
         }
+    }
+    public void UpdateSwaps()
+    {
+        _swapCount++;
+        _UIManager.UpdateSwapsText(_swapCount);
     }
 
 }
