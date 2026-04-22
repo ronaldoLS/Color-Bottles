@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
         _secretSequence = new GameObject[_bottleNumber];
         GeneratePositions();
         CreateTopShelf();
-        PlaceBottleRandom();
+        PlaceSecretSequence();
         CheckSequence();
     }
 
@@ -47,10 +47,13 @@ public class GameManager : MonoBehaviour
         _bottlesTopShelf.Clear();
         for (int i = 0; i < _positions.Count; i++)
         {
-            GameObject bottleObj = Instantiate(_bottlePrefab, new Vector3(_positions[i], 0.86f, -0.5f), Quaternion.identity);
+            Vector3 position = new Vector3(_positions[i], 0.86f, -0.5f);
+            GameObject bottleObj = Instantiate(_bottlePrefab, position, Quaternion.identity);
             Bottle bottle = bottleObj.GetComponent<Bottle>();
+            bottle.SetSelectable(true);
 
-            // Segurança: verifica se há cores suficientes
+
+            // verifica se há cores suficientes
             Color colorToSet = i < _availableColors.Count ? _availableColors[i] : Color.white;
 
             bottle.SetColor(colorToSet);
@@ -59,7 +62,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void PlaceBottleRandom()
+    public void PlaceSecretSequence()
     {
         _secretSequence = new GameObject[_bottleNumber];
         List<int> indexesUsed = new List<int>();
@@ -76,6 +79,7 @@ public class GameManager : MonoBehaviour
 
             GameObject bottleObj = Instantiate(_bottlePrefab, new Vector3(_positions[randomIndex], -0.6f, -0.5f), Quaternion.identity);
             Bottle bottle = bottleObj.GetComponent<Bottle>();
+            bottle.SetSelectable(false); // Garrafas da sequência secreta não são selecionáveis
 
             bottle.SetColor(_availableColors[i]);
             bottle.SetPosition(randomIndex);
@@ -88,13 +92,13 @@ public class GameManager : MonoBehaviour
     public void CheckSequence()
     {
         CorrectPositions = 0;
-        // Importante: comparar pelo que está na prateleira vs a sequência secreta
+        // Compara as garrafas do topo com a sequência secreta
         for (int i = 0; i < _bottlesTopShelf.Count; i++)
         {
             Color color1 = _bottlesTopShelf[i].GetComponent<Bottle>().Color;
             Color color2 = _secretSequence[i].GetComponent<Bottle>().Color;
-            Debug.Log($"Comparing position {i}: Color1 = {color1}, Color2 = {color2} - igual:{color1 == color2}");
-            // Lógica: A garrafa na posição X da prateleira tem a mesma cor que a garrafa X da sequência?
+
+            // Verifica se as cores são iguais
             if (color1 == color2)
             {
                 CorrectPositions++;
@@ -107,6 +111,44 @@ public class GameManager : MonoBehaviour
         // Lógica para posicionar o indicador com base na posição da garrafa selecionada
         _IndicatorPrefab.SetActive(true);
         _IndicatorPrefab.gameObject.transform.position = Pos + _indicatorOfset;
+    }
+    public void SwapVases()
+    {
+        int selectedCount = 0;
+        GameObject bottleSelected = null;
+        int selectedIndex = -1;
+        for (int i = 0; i < _bottlesTopShelf.Count; i++)
+        {
+            GameObject currentBottle = _bottlesTopShelf[i];
+            Bottle bottleComponent = currentBottle.GetComponent<Bottle>();
+            if (bottleComponent.IsSelected)
+            {
+                selectedCount++;
+                if (selectedCount > 1)
+                {
+                    _bottlesTopShelf[i] = _bottlesTopShelf[selectedIndex];
+                    _bottlesTopShelf[selectedIndex] = currentBottle;
+
+                    bottleComponent.toggleSelected();
+                    bottleSelected.GetComponent<Bottle>().toggleSelected();
+                    UpdatePlaces();
+                    break; // Sai do loop após encontrar mais de uma garrafa selecionada
+                }
+                bottleSelected = _bottlesTopShelf[i];
+                selectedIndex = i;
+            }
+        }
+
+        CheckSequence(); // Verifica a sequência após a troca
+    }
+
+    public void UpdatePlaces()
+    {
+        for (int i = 0; i < _bottlesTopShelf.Count; i++)
+        {
+            Vector3 newPosition = new Vector3(_positions[i], 0.86f, -0.5f);
+            _bottlesTopShelf[i].transform.position = newPosition;
+        }
     }
 
 }

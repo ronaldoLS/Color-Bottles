@@ -2,19 +2,39 @@ using UnityEngine;
 
 public class Bottle : BottleBase // INHERITANCE
 {
-    private bool _isSelected;
+    public bool IsSelected { get; private set; }
+    public bool IsSelectable { get; private set; }
     private GameManager _gameManager;
+    [SerializeField] private GameObject _indicator;
+    [SerializeField] private Vector3 _indicatorOfset = new(-0.125f, 0.39f, -0.235f);
+
     private void Start()
     {
-        _isSelected = false;
+        IsSelected = false;
         _gameManager = GameManager.FindFirstObjectByType<GameManager>();
+        _indicator = GameObject.Instantiate(_indicator, transform.position + _indicatorOfset, Quaternion.identity);
+        _indicator.transform.SetParent(transform);
+        _indicator.SetActive(false);
+    }
+    private void Update()
+    {
+        if (IsSelected)
+        {
+            _indicator.SetActive(true);
+        }
+        else
+        {
+            _indicator.SetActive(false);
+        }
     }
 
     public override void OnSelect() // POLYMORPHISM
     {
-        _isSelected = !_isSelected;
-        Debug.Log($"Bottle at position {_position} selected: {_isSelected}");
+        if (!IsSelectable)
+            return;
 
+        toggleSelected();
+        _gameManager.SwapVases();
     }
 
     public void SetPosition(int newPosition)
@@ -29,7 +49,15 @@ public class Bottle : BottleBase // INHERITANCE
     }
     void OnMouseDown()
     {
-        Debug.Log("Objeto clicado: " + gameObject.name);
-        _gameManager.setIndicatorPosition(transform.position);
+        Debug.Log(IsSelectable);
+        OnSelect();
+    }
+    public void toggleSelected()
+    {
+        IsSelected = !IsSelected;
+    }
+    public void SetSelectable(bool selectable)
+    {
+        IsSelectable = selectable;
     }
 }

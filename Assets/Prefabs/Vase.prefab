@@ -125,6 +125,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Bottle
   _position: 0
   _color: {r: 0, g: 0, b: 0, a: 0}
+  _indicator: {fileID: 837945551755632982, guid: 44b4d5bbcf09d264c8f59ad0c15a28ac, type: 3}
+  _indicatorOfset: {x: -0.125, y: 0.39, z: -0.235}
 --- !u!136 &4603811038377119582
 CapsuleCollider:
   m_ObjectHideFlags: 0
