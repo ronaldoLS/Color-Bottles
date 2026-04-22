@@ -19,13 +19,11 @@ public class Bottle : BottleBase // INHERITANCE
     private void Update()
     {
         if (IsSelected)
-        {
             _indicator.SetActive(true);
-        }
+
         else
-        {
             _indicator.SetActive(false);
-        }
+
     }
 
     public override void OnSelect() // POLYMORPHISM

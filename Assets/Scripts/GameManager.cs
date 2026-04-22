@@ -12,15 +12,17 @@ public class GameManager : MonoBehaviour
     private int _bottleNumber;
     private List<GameObject> _bottlesTopShelf = new List<GameObject>();
     private GameObject[] _secretSequence;
+    private UIManager _UIManager;
 
 
     [SerializeField] private List<Color> _availableColors;
     [SerializeField] private List<float> _positions = new List<float>();
 
-    public int CorrectPositions { get; private set; }
+    public int CorrectVases { get; private set; }
 
     private void Start()
     {
+        _UIManager = FindFirstObjectByType<UIManager>();
         _bottleNumber = _availableColors.Count; // Assumindo que o número de garrafas é igual ao número de cores disponíveis
         _secretSequence = new GameObject[_bottleNumber];
         GeneratePositions();
@@ -91,7 +93,7 @@ public class GameManager : MonoBehaviour
 
     public void CheckSequence()
     {
-        CorrectPositions = 0;
+        CorrectVases = 0;
         // Compara as garrafas do topo com a sequência secreta
         for (int i = 0; i < _bottlesTopShelf.Count; i++)
         {
@@ -101,10 +103,10 @@ public class GameManager : MonoBehaviour
             // Verifica se as cores são iguais
             if (color1 == color2)
             {
-                CorrectPositions++;
+                CorrectVases++;
             }
         }
-        Debug.Log($"Correct Positions: {CorrectPositions}");
+        _UIManager.UpdateCorrectVases(CorrectVases);
     }
     public void setIndicatorPosition(Vector3 Pos)
     {
