@@ -47,7 +47,9 @@ public class Bottle : BottleBase // INHERITANCE
     }
     void OnMouseDown()
     {
-        Debug.Log(IsSelectable);
+        if(_gameManager.isGameOver)
+            return;
+
         OnSelect();
     }
     public void toggleSelected()

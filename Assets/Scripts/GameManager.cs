@@ -7,6 +7,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] private GameObject _IndicatorPrefab;
     [SerializeField] private GameObject _bottlePrefab;
     [SerializeField] private float _boundary;
+    [SerializeField] public bool isGameOver;
 
     private Vector3 _indicatorOfset = new(-0.125f, 0.39f, -0.235f);
     private int _bottleNumber;
@@ -14,6 +15,8 @@ public class GameManager : MonoBehaviour
     private GameObject[] _secretSequence;
     private UIManager _UIManager;
     private int _swapCount = 0;
+    private TimeSpan _timeSpan;
+    private float _elapsedTime = 0f;
 
 
     [SerializeField] private List<Color> _availableColors;
@@ -23,9 +26,12 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        isGameOver = false;
         _UIManager = FindFirstObjectByType<UIManager>();
         _bottleNumber = _availableColors.Count; // Assumindo que o número de garrafas é igual ao número de cores disponíveis
         _secretSequence = new GameObject[_bottleNumber];
+        _elapsedTime = 0f;
+        _swapCount = 0;
         GeneratePositions();
         CreateTopShelf();
         PlaceSecretSequence();
@@ -33,8 +39,14 @@ public class GameManager : MonoBehaviour
     }
     private void Update()
     {
-        TimeSpan timeSpan = TimeSpan.FromSeconds(Time.time);
-        _UIManager.UpdateTimeText(timeSpan.ToString(@"mm\:ss"));
+        if (isGameOver)
+            return;
+
+        _elapsedTime += Time.deltaTime;
+        _timeSpan = TimeSpan.FromSeconds(_elapsedTime);
+        _UIManager.UpdateTimeText(_timeSpan.ToString(@"ss\:ff"));
+
+
     }
     public void GeneratePositions()
     {
@@ -112,6 +124,12 @@ public class GameManager : MonoBehaviour
             }
         }
         _UIManager.UpdateCorrectVases(CorrectVases);
+        if (CorrectVases == _bottleNumber)
+        {
+            isGameOver = true;
+            string finalTime = _timeSpan.ToString(@"ss\:ff");
+            _UIManager.ShowFinalPanel(finalTime, _swapCount);
+        }
     }
     public void setIndicatorPosition(Vector3 Pos)
     {
@@ -148,7 +166,7 @@ public class GameManager : MonoBehaviour
         }
 
         CheckSequence(); // Verifica a sequência após a troca
-        
+
     }
 
     public void UpdatePlaces()
