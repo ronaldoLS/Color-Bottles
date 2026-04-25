@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -17,10 +17,12 @@ public class GameManager : MonoBehaviour
     private int _swapCount = 0;
     private TimeSpan _timeSpan;
     private float _elapsedTime = 0f;
-
+    private string _timeFormat = @"m\:ss\:ff";
 
     [SerializeField] private List<Color> _availableColors;
     [SerializeField] private List<float> _positions = new List<float>();
+    [SerializeField] private GameObject _topShelf;
+    [SerializeField] private GameObject _bottomShelf;
 
     public int CorrectVases { get; private set; }
 
@@ -28,15 +30,19 @@ public class GameManager : MonoBehaviour
     {
         isGameOver = false;
         _UIManager = FindFirstObjectByType<UIManager>();
-        _bottleNumber = _availableColors.Count; // Assumindo que o número de garrafas é igual ao número de cores disponíveis
+        _bottleNumber = _availableColors.Count;
         _secretSequence = new GameObject[_bottleNumber];
+        _bottomShelf.SetActive(false);
+
         _elapsedTime = 0f;
         _swapCount = 0;
+
         GeneratePositions();
         CreateTopShelf();
         PlaceSecretSequence();
         CheckSequence();
     }
+
     private void Update()
     {
         if (isGameOver)
@@ -44,10 +50,9 @@ public class GameManager : MonoBehaviour
 
         _elapsedTime += Time.deltaTime;
         _timeSpan = TimeSpan.FromSeconds(_elapsedTime);
-        _UIManager.UpdateTimeText(_timeSpan.ToString(@"ss\:ff"));
-
-
+        _UIManager.UpdateTimeText(_timeSpan.ToString(_timeFormat));
     }
+
     public void GeneratePositions()
     {
         _positions.Clear();
@@ -64,19 +69,21 @@ public class GameManager : MonoBehaviour
     public void CreateTopShelf()
     {
         _bottlesTopShelf.Clear();
+
         for (int i = 0; i < _positions.Count; i++)
         {
             Vector3 position = new Vector3(_positions[i], 0.86f, -0.5f);
             GameObject bottleObj = Instantiate(_bottlePrefab, position, Quaternion.identity);
+            bottleObj.transform.SetParent(_topShelf.transform);
+
             Bottle bottle = bottleObj.GetComponent<Bottle>();
             bottle.SetSelectable(true);
 
-
-            // verifica se há cores suficientes
             Color colorToSet = i < _availableColors.Count ? _availableColors[i] : Color.white;
 
             bottle.SetColor(colorToSet);
             bottle.SetPosition(i);
+
             _bottlesTopShelf.Add(bottleObj);
         }
     }
@@ -84,71 +91,102 @@ public class GameManager : MonoBehaviour
     public void PlaceSecretSequence()
     {
         _secretSequence = new GameObject[_bottleNumber];
-        List<int> indexesUsed = new List<int>();
 
+        List<Color> shuffledColors;
+
+        // Garante que NÃƒO exista nenhum match
+        do
+        {
+            shuffledColors = new List<Color>(_availableColors);
+            Shuffle(shuffledColors);
+        }
+        while (HasAnyMatch(shuffledColors));
+
+        // Instancia os vasos da prateleira de baixo
         for (int i = 0; i < _bottleNumber; i++)
         {
-            int randomIndex;
-            // Tenta achar um índice que ainda não foi usado
-            do
-            {
-                randomIndex = UnityEngine.Random.Range(0, _positions.Count);
-            } while (indexesUsed.Contains(randomIndex));
+            GameObject bottleObj = Instantiate(
+                _bottlePrefab,
+                new Vector3(_positions[i], -0.6f, -0.5f),
+                Quaternion.identity
+            );
+            bottleObj.transform.SetParent(_bottomShelf.transform);
 
-
-            GameObject bottleObj = Instantiate(_bottlePrefab, new Vector3(_positions[randomIndex], -0.6f, -0.5f), Quaternion.identity);
             Bottle bottle = bottleObj.GetComponent<Bottle>();
-            bottle.SetSelectable(false); // Garrafas da sequência secreta não são selecionáveis
+            bottle.SetSelectable(false);
 
-            bottle.SetColor(_availableColors[i]);
-            bottle.SetPosition(randomIndex);
+            bottle.SetColor(shuffledColors[i]);
+            bottle.SetPosition(i);
 
-            _secretSequence[randomIndex] = bottleObj;
-            indexesUsed.Add(randomIndex);
+            _secretSequence[i] = bottleObj;
+        }
+    }
+
+    // Verifica se existe algum match (nÃ£o queremos nenhum)
+    bool HasAnyMatch(List<Color> shuffled)
+    {
+        for (int i = 0; i < shuffled.Count; i++)
+        {
+            Color topColor = _bottlesTopShelf[i].GetComponent<Bottle>().Color;
+
+            if (shuffled[i] == topColor)
+                return true;
+        }
+        return false;
+    }
+
+    // Fisher-Yates shuffle
+    void Shuffle(List<Color> list)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            int randomIndex = UnityEngine.Random.Range(i, list.Count);
+            (list[i], list[randomIndex]) = (list[randomIndex], list[i]);
         }
     }
 
     public void CheckSequence()
     {
         CorrectVases = 0;
-        // Compara as garrafas do topo com a sequência secreta
+
         for (int i = 0; i < _bottlesTopShelf.Count; i++)
         {
             Color color1 = _bottlesTopShelf[i].GetComponent<Bottle>().Color;
             Color color2 = _secretSequence[i].GetComponent<Bottle>().Color;
 
-            // Verifica se as cores são iguais
             if (color1 == color2)
-            {
                 CorrectVases++;
-            }
         }
+
         _UIManager.UpdateCorrectVases(CorrectVases);
+
         if (CorrectVases == _bottleNumber)
         {
-            isGameOver = true;
-            string finalTime = _timeSpan.ToString(@"ss\:ff");
-            _UIManager.ShowFinalPanel(finalTime, _swapCount);
+            GameOver();
         }
     }
+
     public void setIndicatorPosition(Vector3 Pos)
     {
-        // Lógica para posicionar o indicador com base na posição da garrafa selecionada
         _IndicatorPrefab.SetActive(true);
-        _IndicatorPrefab.gameObject.transform.position = Pos + _indicatorOfset;
+        _IndicatorPrefab.transform.position = Pos + _indicatorOfset;
     }
+
     public void SwapVases()
     {
         int selectedCount = 0;
         GameObject bottleSelected = null;
         int selectedIndex = -1;
+
         for (int i = 0; i < _bottlesTopShelf.Count; i++)
         {
             GameObject currentBottle = _bottlesTopShelf[i];
             Bottle bottleComponent = currentBottle.GetComponent<Bottle>();
+
             if (bottleComponent.IsSelected)
             {
                 selectedCount++;
+
                 if (selectedCount > 1)
                 {
                     _bottlesTopShelf[i] = _bottlesTopShelf[selectedIndex];
@@ -156,17 +194,18 @@ public class GameManager : MonoBehaviour
 
                     bottleComponent.toggleSelected();
                     bottleSelected.GetComponent<Bottle>().toggleSelected();
-                    UpdatePlaces(); // Atualiza as posições das garrafas após a troca
-                    UpdateSwaps(); // Atualiza o contador de trocas
-                    break; // Sai do loop após encontrar mais de uma garrafa selecionada
+
+                    UpdatePlaces();
+                    UpdateSwaps();
+                    break;
                 }
+
                 bottleSelected = _bottlesTopShelf[i];
                 selectedIndex = i;
             }
         }
 
-        CheckSequence(); // Verifica a sequência após a troca
-
+        CheckSequence();
     }
 
     public void UpdatePlaces()
@@ -177,10 +216,17 @@ public class GameManager : MonoBehaviour
             _bottlesTopShelf[i].transform.position = newPosition;
         }
     }
+
     public void UpdateSwaps()
     {
         _swapCount++;
         _UIManager.UpdateSwapsText(_swapCount);
     }
-
+    private void GameOver()
+    {
+        isGameOver = true;
+        _bottomShelf.SetActive(true);
+        string finalTime = _timeSpan.ToString(_timeFormat);
+        _UIManager.ShowFinalPanel(finalTime, _swapCount);
+    }
 }

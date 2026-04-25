@@ -44,7 +44,7 @@ public class UIManager : MonoBehaviour
     }
     public void UpdateSwapsText(int swapCount)
     {
-        _swapsText.text = $"Swaps: {swapCount}";
+        _swapsText.text = $"{swapCount}";
     }
     public void UpdateTimeText(string time)
     {
