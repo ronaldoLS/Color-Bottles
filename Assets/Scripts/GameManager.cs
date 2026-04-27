@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour
     private List<GameObject> _bottlesTopShelf = new List<GameObject>();
     private GameObject[] _secretSequence;
     private UIManager _UIManager;
+    private SoundManager _soundManager;
     private int _swapCount = 0;
     private TimeSpan _timeSpan;
     private float _elapsedTime = 0f;
@@ -30,6 +31,7 @@ public class GameManager : MonoBehaviour
     {
         isGameOver = false;
         _UIManager = FindFirstObjectByType<UIManager>();
+        _soundManager = GameObject.FindFirstObjectByType<SoundManager>();
         _bottleNumber = _availableColors.Count;
         _secretSequence = new GameObject[_bottleNumber];
         _bottomShelf.SetActive(false);
@@ -189,6 +191,7 @@ public class GameManager : MonoBehaviour
 
                 if (selectedCount > 1)
                 {
+                    _soundManager.PlaySwapSound();
                     _bottlesTopShelf[i] = _bottlesTopShelf[selectedIndex];
                     _bottlesTopShelf[selectedIndex] = currentBottle;
 
@@ -197,15 +200,16 @@ public class GameManager : MonoBehaviour
 
                     UpdatePlaces();
                     UpdateSwaps();
-                    break;
+                    CheckSequence();
+                    return;
                 }
-
+                
                 bottleSelected = _bottlesTopShelf[i];
                 selectedIndex = i;
             }
         }
 
-        CheckSequence();
+        
     }
 
     public void UpdatePlaces()
@@ -228,5 +232,17 @@ public class GameManager : MonoBehaviour
         _bottomShelf.SetActive(true);
         string finalTime = _timeSpan.ToString(_timeFormat);
         _UIManager.ShowFinalPanel(finalTime, _swapCount);
+    }
+    public int GetSelectedCount()
+    {
+        int count = 0;
+
+        foreach (GameObject bottle in _bottlesTopShelf)
+        {
+            if (bottle.GetComponent<Bottle>().IsSelected)
+                count++;
+        }
+        Debug.Log($"Selected Count: {count}");
+        return count;
     }
 }
