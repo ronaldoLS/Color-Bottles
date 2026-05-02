@@ -16,7 +16,7 @@ public class SoundManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+
     }
     public void PlaySwapSound()
     {
@@ -29,5 +29,22 @@ public class SoundManager : MonoBehaviour
         int randomIndex = Random.Range(0, _selectClip.Length);
         _audioSource.volume = 0.25f;
         _audioSource.PlayOneShot(_selectClip[randomIndex]);
+    }
+
+    public void MusicSwitch()
+    {
+        AudioSource music = GameObject.Find("Music").GetComponent<AudioSource>();
+        if (music != null)
+            return;
+
+        if (music.isPlaying)
+        {
+            music.Pause();
+        }
+        else
+        {
+            music.UnPause();
+        }
+
     }
 }
