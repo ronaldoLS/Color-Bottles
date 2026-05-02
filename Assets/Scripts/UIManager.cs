@@ -14,6 +14,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _FinalTimeText;
     [SerializeField] private TextMeshProUGUI _finalSwapsText;
     [SerializeField] private Button _restartButton;
+    [SerializeField] private Button _homeButton;
 
     private GameManager _gameManager;
 
@@ -59,5 +60,9 @@ public class UIManager : MonoBehaviour
     public void RestartGame()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    public void GoToMenu()
+    {
+        SceneManager.LoadScene("Menu");
     }
 }
