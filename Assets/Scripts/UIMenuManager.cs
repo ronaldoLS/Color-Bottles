@@ -16,9 +16,6 @@ public class UIMenuManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _buttonStart.onClick.AddListener(OnStartButtonClicked);
-        _buttonMusic.onClick.AddListener(OnMusicButtonClicked);
-
         _musicManager = FindFirstObjectByType<MusicManager>();
         if (_musicManager != null)
         {
@@ -34,13 +31,9 @@ public class UIMenuManager : MonoBehaviour
 
         UpdateMusicButton();
     }
-    public void OnStartButtonClicked()
+    public void PlayGame()
     {
         SceneManager.LoadScene("Main");
-    }
-    public void OnMusicButtonClicked()
-    {
-
     }
     public void UpdateMusicButton()
     {
