@@ -242,7 +242,6 @@ public class GameManager : MonoBehaviour
             if (bottle.GetComponent<Bottle>().IsSelected)
                 count++;
         }
-        Debug.Log($"Selected Count: {count}");
         return count;
     }
 }
