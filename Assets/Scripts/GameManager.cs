@@ -74,6 +74,7 @@ public class GameManager : MonoBehaviour
 
         for (int i = 0; i < _positions.Count; i++)
         {
+
             Vector3 position = new Vector3(_positions[i], 0.86f, -0.5f);
             GameObject bottleObj = Instantiate(_bottlePrefab, position, Quaternion.identity);
             bottleObj.transform.SetParent(_topShelf.transform);
@@ -88,6 +89,15 @@ public class GameManager : MonoBehaviour
 
             _bottlesTopShelf.Add(bottleObj);
         }
+    }
+    void RandonPosition(int position)
+    {
+ 
+        float randomX = UnityEngine.Random.Range((_positions[position] - 0.1f), (_positions[position] + 0.1f));
+        float randomz = UnityEngine.Random.Range(-0.4f, -0.6f);
+        Vector3 newPosition = new Vector3(randomX, 0.86f, randomz);
+
+        _bottlesTopShelf[position].transform.position = newPosition;
     }
 
     public void PlaceSecretSequence()
@@ -193,29 +203,31 @@ public class GameManager : MonoBehaviour
                 {
                     _soundManager.PlaySwapSound();
                     _bottlesTopShelf[i] = _bottlesTopShelf[selectedIndex];
+                    RandonPosition(i);
+                    
                     _bottlesTopShelf[selectedIndex] = currentBottle;
-
+                    RandonPosition(selectedIndex);
                     bottleComponent.toggleSelected();
                     bottleSelected.GetComponent<Bottle>().toggleSelected();
 
-                    UpdatePlaces();
+                    //UpdatePlaces();
                     UpdateSwaps();
                     CheckSequence();
                     return;
                 }
-                
+
                 bottleSelected = _bottlesTopShelf[i];
                 selectedIndex = i;
             }
         }
 
-        
+
     }
     public void UpdatePlaces()
     {
         for (int i = 0; i < _bottlesTopShelf.Count; i++)
         {
-            Vector3 newPosition = new Vector3(_positions[i], 0.86f, -0.5f);
+            Vector3 newPosition = new(_positions[i], 0.86f, -0.5f);
             _bottlesTopShelf[i].transform.position = newPosition;
         }
     }

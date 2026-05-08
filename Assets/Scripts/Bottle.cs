@@ -51,7 +51,6 @@ public class Bottle : BottleBase // INHERITANCE
     }
     void OnMouseDown()
     {
-        Debug.Log("Clicked on bottle at position: " + _position);
         if (_gameManager.isGameOver)
             return;
 
@@ -59,11 +58,6 @@ public class Bottle : BottleBase // INHERITANCE
             return;        
 
         OnSelect();
-    }
-    void OnMouseEnter()
-    {
-        Debug.Log("Mouse entered bottle at position: " + _position);
-
     }
 
 
