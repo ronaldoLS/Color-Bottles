@@ -5,12 +5,16 @@ public class SoundManager : MonoBehaviour
     [SerializeField] private AudioClip[] _swapClip;
     [SerializeField] private AudioClip[] _selectClip;
 
+
     private AudioSource _audioSource;
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         _audioSource = GetComponent<AudioSource>();
+
+
     }
 
     // Update is called once per frame
@@ -31,20 +35,5 @@ public class SoundManager : MonoBehaviour
         _audioSource.PlayOneShot(_selectClip[randomIndex]);
     }
 
-    public void MusicSwitch()
-    {
-        AudioSource music = GameObject.Find("Music").GetComponent<AudioSource>();
-        if (music != null)
-            return;
 
-        if (music.isPlaying)
-        {
-            music.Pause();
-        }
-        else
-        {
-            music.UnPause();
-        }
-
-    }
 }

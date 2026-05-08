@@ -3,10 +3,30 @@ using UnityEngine;
 public class MusicManager : MonoBehaviour
 {
     private AudioSource _Music;
+    public bool _isMuted;
+    private MainManager _mainManager;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
-    {
+    {        
         _Music = GetComponent<AudioSource>();
+        _mainManager = FindFirstObjectByType<MainManager>();
+
+        if (_mainManager != null)
+            _isMuted = _mainManager.isMuted;
+        else
+            _isMuted = false;
+
+        _Music.Play();
+
+        if (_isMuted)
+        {
+            _Music.Pause();
+        }
+        else
+        {
+            _Music.UnPause();
+        }
+
     }
 
     // Update is called once per frame
@@ -24,6 +44,6 @@ public class MusicManager : MonoBehaviour
         {
             _Music.UnPause();
         }
-
+        _mainManager.ToggleMute();
     }
 }

@@ -211,7 +211,6 @@ public class GameManager : MonoBehaviour
 
         
     }
-
     public void UpdatePlaces()
     {
         for (int i = 0; i < _bottlesTopShelf.Count; i++)
