@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
+
 
 public class GameManager : MonoBehaviour
 {
@@ -19,6 +21,7 @@ public class GameManager : MonoBehaviour
     private TimeSpan _timeSpan;
     private float _elapsedTime = 0f;
     private string _timeFormat = @"m\:ss\:ff";
+    private bool _isSwapping;
 
     [SerializeField] private List<Color> _availableColors;
     [SerializeField] private List<float> _positions = new List<float>();
@@ -186,42 +189,83 @@ public class GameManager : MonoBehaviour
 
     public void SwapVases()
     {
+        if (_isSwapping)
+            return;
+
         int selectedCount = 0;
-        GameObject bottleSelected = null;
-        int selectedIndex = -1;
+        GameObject firstBottle = null;
+        GameObject secondBottle = null;
+
+        int firstIndex = -1;
+        int secondIndex = -1;
 
         for (int i = 0; i < _bottlesTopShelf.Count; i++)
         {
-            GameObject currentBottle = _bottlesTopShelf[i];
-            Bottle bottleComponent = currentBottle.GetComponent<Bottle>();
+            Bottle bottle = _bottlesTopShelf[i].GetComponent<Bottle>();
 
-            if (bottleComponent.IsSelected)
+            if (bottle.IsSelected)
             {
                 selectedCount++;
 
-                if (selectedCount > 1)
+                if (selectedCount == 1)
                 {
-                    _soundManager.PlaySwapSound();
-                    _bottlesTopShelf[i] = _bottlesTopShelf[selectedIndex];
-                    RandonPosition(i);
-                    
-                    _bottlesTopShelf[selectedIndex] = currentBottle;
-                    RandonPosition(selectedIndex);
-                    bottleComponent.toggleSelected();
-                    bottleSelected.GetComponent<Bottle>().toggleSelected();
-
-                    //UpdatePlaces();
-                    UpdateSwaps();
-                    CheckSequence();
-                    return;
+                    firstBottle = _bottlesTopShelf[i];
+                    firstIndex = i;
                 }
-
-                bottleSelected = _bottlesTopShelf[i];
-                selectedIndex = i;
+                else if (selectedCount == 2)
+                {
+                    secondBottle = _bottlesTopShelf[i];
+                    secondIndex = i;
+                }
             }
         }
 
+        if (selectedCount < 2)
+            return;
 
+        AnimateSwap(firstBottle, secondBottle, firstIndex, secondIndex);
+    }
+    private void AnimateSwap(GameObject bottleA, GameObject bottleB, int indexA, int indexB)
+    {
+        _isSwapping = true;
+        _soundManager.PlaySwapSound();
+
+        Vector3 posA = bottleA.transform.position;
+        Vector3 posB = bottleB.transform.position;
+
+        float duration = 0.35f;
+
+        // posição elevada
+        Vector3 middleA = new Vector3(posB.x, posA.y + 0.3f, posB.z - 0.2f);
+        Vector3 middleB = new Vector3(posA.x, posB.y + 0.3f, posA.z + 0.2f);
+
+        Sequence sequence = DOTween.Sequence();
+
+        sequence.Join(
+            bottleA.transform
+                .DOPath(new Vector3[] { posA, middleA, posB }, duration, PathType.CatmullRom)
+                .SetEase(Ease.InOutSine)
+        );
+
+        sequence.Join(
+            bottleB.transform
+                .DOPath(new Vector3[] { posB, middleB, posA }, duration, PathType.CatmullRom)
+                .SetEase(Ease.InOutSine)
+        );
+
+        sequence.OnComplete(() =>
+        {
+            // troca na lista
+            (_bottlesTopShelf[indexA], _bottlesTopShelf[indexB]) =
+            (_bottlesTopShelf[indexB], _bottlesTopShelf[indexA]);
+
+            bottleA.GetComponent<Bottle>().toggleSelected();
+            bottleB.GetComponent<Bottle>().toggleSelected();
+
+            _isSwapping = false;
+            UpdateSwaps();
+            CheckSequence();
+        });
     }
     public void UpdatePlaces()
     {
