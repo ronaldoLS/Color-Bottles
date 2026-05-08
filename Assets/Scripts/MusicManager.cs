@@ -9,7 +9,7 @@ public class MusicManager : MonoBehaviour
     void Start()
     {        
         _Music = GetComponent<AudioSource>();
-        _mainManager = FindFirstObjectByType<MainManager>();
+        _mainManager = FindAnyObjectByType<MainManager>();
 
         if (_mainManager != null)
             _isMuted = _mainManager.isMuted;

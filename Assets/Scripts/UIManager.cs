@@ -21,7 +21,7 @@ public class UIManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _gameManager = FindFirstObjectByType<GameManager>();
+        _gameManager = FindAnyObjectByType<GameManager>();
         _correctVasesText.text = "0";
         _swapsText.text = "0";
         _timeText.text = "0:00";

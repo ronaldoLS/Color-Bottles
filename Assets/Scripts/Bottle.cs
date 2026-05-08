@@ -12,8 +12,8 @@ public class Bottle : BottleBase // INHERITANCE
     private void Start()
     {
         IsSelected = false;
-        _gameManager = GameManager.FindFirstObjectByType<GameManager>();
-        _soundManager = SoundManager.FindFirstObjectByType<SoundManager>();
+        _gameManager = GameManager.FindAnyObjectByType<GameManager>();
+        _soundManager = SoundManager.FindAnyObjectByType<SoundManager>();
         _indicator = GameObject.Instantiate(_indicator, transform.position + _indicatorOfset, Quaternion.identity);
         _indicator.transform.SetParent(transform);
         _indicator.SetActive(false);
@@ -51,6 +51,7 @@ public class Bottle : BottleBase // INHERITANCE
     }
     void OnMouseDown()
     {
+        Debug.Log("Clicked on bottle at position: " + _position);
         if (_gameManager.isGameOver)
             return;
 
@@ -59,6 +60,13 @@ public class Bottle : BottleBase // INHERITANCE
 
         OnSelect();
     }
+    void OnMouseEnter()
+    {
+        Debug.Log("Mouse entered bottle at position: " + _position);
+
+    }
+
+
     public void toggleSelected()
     {
         IsSelected = !IsSelected;

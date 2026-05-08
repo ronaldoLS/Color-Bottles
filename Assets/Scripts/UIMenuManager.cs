@@ -16,7 +16,7 @@ public class UIMenuManager : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        _musicManager = FindFirstObjectByType<MusicManager>();
+        _musicManager = FindAnyObjectByType<MusicManager>();
         if (_musicManager != null)
         {
             _music = _musicManager.GetComponent<AudioSource>();

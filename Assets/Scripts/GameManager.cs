@@ -30,8 +30,8 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         isGameOver = false;
-        _UIManager = FindFirstObjectByType<UIManager>();
-        _soundManager = GameObject.FindFirstObjectByType<SoundManager>();
+        _UIManager = FindAnyObjectByType<UIManager>();
+        _soundManager = FindAnyObjectByType<SoundManager>();
         _bottleNumber = _availableColors.Count;
         _secretSequence = new GameObject[_bottleNumber];
         _bottomShelf.SetActive(false);
