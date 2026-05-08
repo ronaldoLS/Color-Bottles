@@ -55,9 +55,7 @@ public class Bottle : BottleBase // INHERITANCE
             return;
 
         if (!IsSelectable)
-            return;
-
-        
+            return;        
 
         OnSelect();
     }
